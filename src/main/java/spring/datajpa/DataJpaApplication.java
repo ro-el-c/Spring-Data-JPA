@@ -8,6 +8,7 @@ public class DataJpaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DataJpaApplication.class, args);
+		System.out.println("Hello, Spring Data JPA !!");
 	}
 
 }
