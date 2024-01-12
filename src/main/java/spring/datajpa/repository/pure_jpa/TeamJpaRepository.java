@@ -1,4 +1,4 @@
-package spring.datajpa.repository;
+package spring.datajpa.repository.pure_jpa;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
