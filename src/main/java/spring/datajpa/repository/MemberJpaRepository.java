@@ -5,6 +5,9 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import spring.datajpa.entity.Member;
 
+/**
+ * 순수 JPA 기반 Repository
+ * */
 @Repository
 public class MemberJpaRepository {
     @PersistenceContext
