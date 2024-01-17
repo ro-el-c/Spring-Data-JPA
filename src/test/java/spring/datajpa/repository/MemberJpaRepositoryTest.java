@@ -90,4 +90,34 @@ class MemberJpaRepositoryTest {
         Member findMember = result.get(0);
         assertThat(findMember).isEqualTo(m1);
     }
+
+    @Test
+    public void paging() {
+        //given
+        memberJpaRepository.save(new Member("member1", 25));
+        memberJpaRepository.save(new Member("member2", 25));
+        memberJpaRepository.save(new Member("member3", 25));
+        memberJpaRepository.save(new Member("member4", 25));
+        memberJpaRepository.save(new Member("member5", 25));
+        memberJpaRepository.save(new Member("member6", 25));
+        memberJpaRepository.save(new Member("member7", 25));
+
+        //offset, limit 계산은 직접
+        int age=25;
+        int offset=0;
+        int limit=3;
+
+        //when
+        List<Member> members = memberJpaRepository.findByPage(age, offset, limit);
+        long totalCount = memberJpaRepository.totalCount(age);
+
+        // 페이지 계산 공식 적용 / 페이징 객체 사용 등
+        // totalPage = totalCount / size ...
+        // 마지막 페이지 ...
+        // 최초 페이지 ..
+
+        //then
+        assertThat(members.size()).isEqualTo(3);
+        assertThat(totalCount).isEqualTo(7);
+    }
 }
