@@ -4,14 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import spring.datajpa.entity.Member;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -62,6 +60,21 @@ class MemberRepositoryTest {
         memberRepository.delete(member2);
         count = memberRepository.count();
         assertThat(count).isEqualTo(0);
+
+    }
+
+    @Test
+    public void findByNameAndAgeGreaterThen() {
+        Member m1 = new Member("AAA", 20);
+        Member m2 = new Member("AAA", 22);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> result = memberRepository.findByNameAndAgeGreaterThan("AAA", 21);
+
+        assertThat(result.get(0).getName()).isEqualTo(m2.getName());
+        assertThat(result.get(0).getAge()).isEqualTo(m2.getAge());
+        assertThat(result.size()).isEqualTo(1);
 
     }
 }
