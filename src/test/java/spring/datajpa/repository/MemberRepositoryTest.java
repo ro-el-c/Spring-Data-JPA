@@ -9,6 +9,7 @@ import spring.datajpa.entity.Member;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -88,6 +89,22 @@ class MemberRepositoryTest {
 
         //when
         List<Member> result = memberRepository.findByName("AAA");
+
+        //then
+        Member findMember = result.get(0);
+        assertThat(findMember).isEqualTo(m1);
+    }
+
+    @Test
+    public void testQuery() {
+        //given
+        Member m1 = new Member("AAA", 20);
+        Member m2 = new Member("AAA", 22);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        //when
+        List<Member> result = memberRepository.findUser("AAA", 20);
 
         //then
         Member findMember = result.get(0);
