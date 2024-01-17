@@ -4,6 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import spring.datajpa.dto.MemberDto;
 import spring.datajpa.entity.Member;
@@ -169,6 +172,36 @@ class MemberRepositoryTest {
         for (Member member : result) {
             System.out.println("member = " + member);
         }
+    }
+
+    @Test
+    public void paging() {
+        //given
+        memberRepository.save(new Member("member1", 25));
+        memberRepository.save(new Member("member2", 25));
+        memberRepository.save(new Member("member3", 25));
+        memberRepository.save(new Member("member4", 25));
+        memberRepository.save(new Member("member5", 25));
+        memberRepository.save(new Member("member6", 25));
+        memberRepository.save(new Member("member7", 25));
+
+        //when
+        int age=25;
+        // 0페이지에서 3개의 결과, 이름에 대하여 내림차순
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "name"));
+
+        Page<Member> page = memberRepository.findByAge(age, pageRequest);
+
+        //then
+        List<Member> content = page.getContent();
+        long totalElements = page.getTotalElements();// total count
+
+        assertThat(content.size()).isEqualTo(3);
+        assertThat(page.getTotalElements()).isEqualTo(7);
+        assertThat(page.getNumber()).isEqualTo(0); //page.getNumber(): 페이지 번호
+        assertThat(page.getTotalPages()).isEqualTo(3); //7개의 데이터를 3개씩 가져옴 -> 3페이지
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue();
     }
 
 }
