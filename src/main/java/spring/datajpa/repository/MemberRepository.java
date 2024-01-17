@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import spring.datajpa.dto.MemberDto;
 import spring.datajpa.entity.Member;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,4 +27,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {//JpaRepo
 
     @Query("select m.name from Member m")
     List<String> findNameList();
+
+    @Query("select m from Member m where m.name in :names")
+    List<Member> findByNames(@Param("names") Collection<String> names);
 }
