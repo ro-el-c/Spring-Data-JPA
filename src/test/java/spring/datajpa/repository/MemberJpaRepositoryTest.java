@@ -67,7 +67,7 @@ class MemberJpaRepositoryTest {
         memberJpaRepository.save(m1);
         memberJpaRepository.save(m2);
 
-        List<Member> result = memberJpaRepository.findByNameAndAgeGreaterThen("AAA", 21);
+        List<Member> result = memberJpaRepository.findByNameAndAgeGreaterThan("AAA", 21);
 
         assertThat(result.get(0).getName()).isEqualTo(m2.getName());
         assertThat(result.get(0).getAge()).isEqualTo(m2.getAge());
