@@ -8,6 +8,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //기본 생성자의 access level을 protected로 설정
 // JPA에서 Entity는 기본 생성자가 필요하며, private으로 설정하면 안 됨. protected까지는 열어둬야 함
 @ToString(of = {"id", "name", "age"})
+@NamedQuery(
+        name = "Member.findByName",
+        query = "select m from Member m where m.name=:name"
+)
 public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")
