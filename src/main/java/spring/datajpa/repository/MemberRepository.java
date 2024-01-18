@@ -39,6 +39,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {//JpaRepo
      - 정렬 조건: 이름으로 내림차순
      - 페이징 조건: 첫 번째 페이지, 페이지당 보여줄 데이터는 3건
     * */
+    @Query(value = "select m from Member m left join m.team t"
+            , countQuery = "select count(m) from Member m") // count query 분리
     Page<Member> findByAge(int age, Pageable pageable);
     Slice<Member> findSliceByAge(int age, Pageable pageable);
+
 }
