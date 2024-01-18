@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import spring.datajpa.dto.MemberDto;
@@ -21,7 +22,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {//JpaRepo
 //    @Query(name = "Member.findByName") // 없어도 잘 동작함
     List<Member> findByName(@Param("name") String name);
 
-    @Query("select m from Member m where m.name=:name and m.age=:age")
+    @Query("select m from Member m where m.name=:name and m.age = :age")
     List<Member> findUser(@Param("name") String name, @Param("age") int age);
 
     @Query("select new spring.datajpa.dto.MemberDto(m.id, m.name, t.name) " +
@@ -44,4 +45,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {//JpaRepo
     Page<Member> findByAge(int age, Pageable pageable);
     Slice<Member> findSliceByAge(int age, Pageable pageable);
 
+    //벌크성 수정 쿼리
+    @Modifying(clearAutomatically = true) //필수
+    @Query("update Member m set m.age = m.age + 1 " +
+            "where m.age >= :age")
+    int bulkAgePlus(@Param("age") int age);
 }
