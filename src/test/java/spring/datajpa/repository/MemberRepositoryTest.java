@@ -1,5 +1,7 @@
 package spring.datajpa.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MemberRepositoryTest {
     @Autowired MemberRepository memberRepository;
     @Autowired TeamRepository teamRepository;
+    @PersistenceContext EntityManager em;
 
     @Test
     public void testMember() {
@@ -230,6 +233,31 @@ class MemberRepositoryTest {
         assertThat(page.getNumber()).isEqualTo(0); //page.getNumber(): 페이지 번호
         assertThat(page.isFirst()).isTrue();
         assertThat(page.hasNext()).isTrue();
+    }
+
+    @Test
+    public void bulkUpdate() {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 15));
+        memberRepository.save(new Member("member3", 17));
+        memberRepository.save(new Member("member4", 20));
+        memberRepository.save(new Member("member5", 25));
+        memberRepository.save(new Member("member6", 42));
+        memberRepository.save(new Member("member7", 37));
+
+        //when
+        int resultCount = memberRepository.bulkAgePlus(20);
+//        em.clear();
+        // @Modifying 에서 clearAutomatically = true 설정을 해주었기 때문에 영속성 컨텍스트 초기화 생략 가능
+
+        List<Member> result = memberRepository.findByName("member5");
+        Member member5 = result.get(0);
+        System.out.println("member5 = " + member5);
+
+        //then
+        assertThat(resultCount).isEqualTo(4);
+        assertThat(member5.getAge()).isEqualTo(26);
     }
 
 }
