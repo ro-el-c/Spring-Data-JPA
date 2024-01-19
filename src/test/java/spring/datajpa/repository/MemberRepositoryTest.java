@@ -338,7 +338,33 @@ class MemberRepositoryTest {
             System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
             System.out.println("member.getTeam().getClass() = " + member.getTeam().getClass());
         }
+    }
 
+    @Test
+    public void findNamedMemberEntityGraph() {
+        //given
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 20, teamB);
+        Member member3 = new Member("member1", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+
+        em.flush();
+        em.clear();
+
+        //when
+        List<Member> result = memberRepository.findNamedEntityGraphByName("member1");
+        for (Member member : result) {
+            System.out.println("member.getName() = " + member.getName());
+            System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
+            System.out.println("member.getTeam().getClass() = " + member.getTeam().getClass());
+        }
     }
 
 }
