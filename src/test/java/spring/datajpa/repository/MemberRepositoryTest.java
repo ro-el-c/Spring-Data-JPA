@@ -260,4 +260,39 @@ class MemberRepositoryTest {
         assertThat(member5.getAge()).isEqualTo(26);
     }
 
+    @Test
+    public void findMemberLazy() {
+        //given
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        /*N+1 문제
+         *select Member "1" + select Team "N"*/
+//        List<Member> members = memberRepository.findAll();
+//        for (Member member : members) {
+//            System.out.println("member.getName() = " + member.getName());
+//            System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
+//        }
+
+        //fetch join으로 해결
+        List<Member> fetchJoinMembers = memberRepository.findMemberFetchJoin();
+        for (Member member : fetchJoinMembers) {
+            System.out.println("member.getName() = " + member.getName());
+            System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
+        }
+
+
+    }
+
 }
