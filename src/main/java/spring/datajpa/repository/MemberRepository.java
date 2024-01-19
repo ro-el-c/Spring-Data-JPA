@@ -3,6 +3,7 @@ package spring.datajpa.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -53,4 +54,18 @@ public interface MemberRepository extends JpaRepository<Member, Long> {//JpaRepo
 
     @Query("select m from Member m left join fetch m.team")
     List<Member> findMemberFetchJoin();
+
+    //@EntityGraph(attributePaths = {"fetch join 할 객체의 필드명"})
+    //1. findAll()
+    @Override
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findAll();
+    //2. @Query
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from Member m")
+    List<Member> findByQueryAndEntityGraph();
+    //3. 메서드로 쿼리 생성
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findEntityGraphByName(@Param("name") String name);
+
 }
