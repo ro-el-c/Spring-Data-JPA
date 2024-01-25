@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import spring.datajpa.dto.MemberDto;
 import spring.datajpa.entity.Member;
@@ -26,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-//@Rollback(value = false)
+@Rollback(value = false)
 class MemberRepositoryTest {
     @Autowired MemberRepository memberRepository;
     @Autowired TeamRepository teamRepository;
@@ -361,10 +362,28 @@ class MemberRepositoryTest {
         //when
         List<Member> result = memberRepository.findNamedEntityGraphByName("member1");
         for (Member member : result) {
-            System.out.println("member.getName() = " + member.getName());
+            System.out.println("membe r.getName() = " + member.getName());
             System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
             System.out.println("member.getTeam().getClass() = " + member.getTeam().getClass());
         }
+    }
+
+    @Test
+    public void queryHint() {
+        //given
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        //when
+//        Member findMember = memberRepository.findById(member1.getId()).get();
+//        findMember.setName("member"); // 변경 감지, update
+
+        Member findMember = memberRepository.findReadOnlyByName(member1.getName());
+        findMember.setName("member"); //무시
+
+        em.flush();
     }
 
 }
